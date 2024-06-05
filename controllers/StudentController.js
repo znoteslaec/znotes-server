@@ -2,6 +2,7 @@ const Student = require('../models/studentsModel');
 const Department = require('../models/deptModel');
 const Scheme = require('../models/schemeModel');
 const Semester = require('../models/semModel');
+const Batch = require('../models/batchModel');
 
 
 
@@ -16,9 +17,9 @@ const student = async (req, res) => {
 
         // console.log(studentData);
         res
-        .status(200)
-        .json({studentData} 
-        );
+            .status(200)
+            .json({ studentData }
+            );
 
     } catch (error) {
         res.status(400).send({ message: `error from the user route ${error}` })
@@ -32,11 +33,12 @@ const student = async (req, res) => {
 const getAllStudents = async (req, res) => {
     try {
         // Retrieve all students from the database
-        const students = await Student.find() 
-        .populate('department')
-        .populate('scheme')
-        .populate('semester')
-        .exec();
+        const students = await Student.find()
+            .populate('department')
+            .populate('scheme')
+            .populate('semester')
+            .populate('batch')
+            .exec();
         res.status(200).json(students);
     } catch (error) {
         res.status(500).json({ message: 'Internal server error.' });
@@ -55,7 +57,7 @@ const getAllStudents = async (req, res) => {
 const register = async (req, res, next) => {
     try {
         // Extract departmentId, semesterId, and batchId from request body
-        const { name, dob, gender, usn, password, email, contact, department, semester, scheme  } = req.body;
+        const { name, dob, gender, usn, password, email, contact, department, semester, batch, scheme } = req.body;
         // Get the current date and time
         const currentDate = new Date();
 
@@ -63,10 +65,12 @@ const register = async (req, res, next) => {
 
         // Find the department, semester, and scheme documents based on their names
         const checkDepartment = await Department.findOne({ deptId: department });
-   
+
         const checkSemester = await Semester.findOne({ semNum: semester });
-       
-        const checkScheme = await Scheme.findOne({ scheme: scheme});
+
+        const checkBatch = await Batch.findOne({ batch: batch });
+
+        const checkScheme = await Scheme.findOne({ scheme: scheme });
 
 
         // Check if any of the referenced documents are not found
@@ -77,7 +81,7 @@ const register = async (req, res, next) => {
 
 
         // Check if customer with the same usn already exists
-        const studentExist = await Student.findOne({ usn});
+        const studentExist = await Student.findOne({ usn });
 
         if (studentExist) {
             return res.status(400).json({ message: "You are already Registered !" });
@@ -85,21 +89,22 @@ const register = async (req, res, next) => {
 
 
 
-       // Create a new student document
-    const newStudent = new Student({
-        name,
-        dob,
-        password,
-        gender,
-        usn,
-        email,
-        contact,
-        regesteredAt: currentDate,
-        department: checkDepartment._id,
-        semester: checkSemester._id,
-        scheme: checkScheme._id,
-      });
-  
+        // Create a new student document
+        const newStudent = new Student({
+            name,
+            dob,
+            password,
+            gender,
+            usn,
+            email,
+            contact,
+            regesteredAt: currentDate,
+            department: checkDepartment._id,
+            semester: checkSemester._id,
+            batch: checkBatch._id,
+            scheme: checkScheme._id,
+        });
+
 
         // Save the new customer object to the database
         const savedStudent = await Student.create(newStudent);
@@ -130,10 +135,10 @@ const studentLogin = async (req, res) => {
         }
 
         if (student) {
-          
+
             res.status(200).json({
                 msg: "Login Successful",
-                token : await student.generateToken(),
+                token: await student.generateToken(),
                 userId: student.usn
             });
 
@@ -153,7 +158,7 @@ const studentLogin = async (req, res) => {
 
 
 
-module.exports = {student,  register, studentLogin, getAllStudents  };
+module.exports = { student, register, studentLogin, getAllStudents };
 
 
 

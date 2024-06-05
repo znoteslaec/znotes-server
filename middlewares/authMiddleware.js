@@ -27,6 +27,7 @@ const authMiddleware = async (req, res, next) => {
         .populate('semester')
         .populate('department')
         .populate('scheme')
+        .populate('batch')
         .select({
             password:0,
         });

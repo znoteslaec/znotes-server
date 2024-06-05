@@ -32,7 +32,7 @@ const studentSchema = z.object({
         .trim()
         .min(8, { message: "Password must be atleast of 8 chars." })
         .max(16, { message: "Password must not be more than 16 chars." }),
-        
+
     gender: z
         .enum(Student.schema.path('gender').enumValues),
 
@@ -47,6 +47,9 @@ const studentSchema = z.object({
 
     scheme: z
         .string({ required_error: "Scheme is required" }),
+        
+    batch: z
+        .string({ required_error: "Batch is required" }),
 
 });
 

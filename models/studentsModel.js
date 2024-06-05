@@ -30,7 +30,7 @@ const studentSchema = new mongoose.Schema({
   department: { type: mongoose.Schema.Types.ObjectId, ref: 'Department' },
   semester: { type: mongoose.Schema.Types.ObjectId, ref: 'Semester' },
   scheme: { type: mongoose.Schema.Types.ObjectId, ref: 'Scheme' },
-
+  batch: { type: mongoose.Schema.Types.ObjectId, ref: 'Batch' },
   email: {
     type: String,
     required: true,
