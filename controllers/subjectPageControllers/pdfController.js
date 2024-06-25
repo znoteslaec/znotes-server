@@ -62,6 +62,9 @@ const addPdfToSection = async (req, res, next) => {
     }
 };
 
+
+
+
 // Controller function to get PDFs of a section
 const getPdfsOfSection = async (req, res) => {
     const { subCode, sectionId } = req.params;
