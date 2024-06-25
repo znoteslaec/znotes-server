@@ -4,14 +4,14 @@ const bucket = require('../../utils/gcsConfig');
 
 // Controller function to add PDF to a section
 const addPdfToSection = async (req, res, next) => {
-    const { deptId, sectionId } = req.params;
-    const { subCode, pdfTitle, pdfDescription, addedBy, addedByName } = req.body;
+    const {  sectionId } = req.params;
+    const { subCode, pdfTitle, pdfDescription, addedBy, addedByName, deptId, schemeId, semNum} = req.body;
     const pdfFile = req.file;
 
     try {
         const currentDate = new Date();
-        const formattedDate = `${currentDate.getFullYear()}${(currentDate.getMonth() + 1).toString().padStart(2, '0')}${currentDate.getDate().toString().padStart(2, '0')}${currentDate.getHours().toString().padStart(2, '0')}${currentDate.getMinutes().toString().padStart(2, '0')}${currentDate.getSeconds().toString().padStart(2, '0')}`;
-        const uniqueFilename = `${formattedDate}-znotes-${pdfFile.originalname}`;
+        const formattedDate = `${currentDate.getDate().toString().padStart(2, '0')}${(currentDate.getMonth() + 1).toString().padStart(2, '0')}${currentDate.getFullYear().toString().slice(-2)}`;
+        const uniqueFilename = `znotes-${deptId}${schemeId}${semNum}-${formattedDate}-${pdfFile.originalname}`;
 
 
 

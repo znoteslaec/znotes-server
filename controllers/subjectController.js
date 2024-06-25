@@ -51,9 +51,9 @@ const addSubject = async (req, res, next) => {
 
     res.status(201).json({ message: 'Subject added successfully', subject: newSubject });
   } catch (error) {
+    next(error);
     console.error(error);
     res.status(500).json({ error: 'Server error' });
-    next(error);
   }
 };
 
@@ -78,15 +78,15 @@ const getSub = async (req, res, next) => {
 
     res.status(200).json({ subjects });
   } catch (error) {
+    next(error);
     console.error(error);
     res.status(500).json({ error: 'Server error' });
-    next(error);
   }
 };
 
 
 // Controller function to get subject details by subCode
-const getSubjectDetails = async (req, res) => {
+const getSubjectDetails = async (req, res, error) => {
   const subCode = req.params.subCode;
 
   try {
@@ -105,6 +105,7 @@ const getSubjectDetails = async (req, res) => {
       res.status(404).send('Subject not found');
     }
   } catch (error) {
+    next(error);
     console.error(error);
     res.status(500).json({ error: 'Server error' });
   }
@@ -159,9 +160,9 @@ const editSubject = async (req, res, next) => {
 
     res.status(200).json({ message: 'Subject updated successfully', subject });
   } catch (error) {
+    next(error);
     console.error(error);
     res.status(500).json({ error: 'Server error' });
-    next(error);
   }
 };
 
@@ -195,9 +196,9 @@ const deleteSubject = async (req, res, next) => {
 
     res.status(200).json({ message: 'Subject and associated sections deleted successfully', deletedSubject });
   } catch (error) {
+    next(error);
     console.error(error);
     res.status(500).json({ error: 'Server error' });
-    next(error);
   }
 };
 

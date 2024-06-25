@@ -83,7 +83,7 @@ router.delete('/deleteSection/:subCode/:sectionIndex', sectionController.deleteS
 // * PDF Related Routes
 // *--------------------------
 
-router.route("/addPdfToSection/:deptId/:sectionId/addPdf").post(upload.single("pdfFile"),pdfController.addPdfToSection);
+router.route("/addPdfToSection/:sectionId/addPdf").post(upload.single("pdfFile"),pdfController.addPdfToSection);
 //router.post('/:sectionId/addPdf', sectionController.addPdfToSection)
 
 
@@ -120,7 +120,7 @@ router.route("/addSem").post(otherController.addSem);
 router.route("/department").get(deptController.department);
 
 // get
-router.route("/dss").get(dssController.dss);
+router.route("/cdss").get(dssController.dss);
 
 
 module.exports = router;

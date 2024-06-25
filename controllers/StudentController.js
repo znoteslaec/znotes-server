@@ -3,6 +3,7 @@ const Department = require('../models/deptModel');
 const Scheme = require('../models/schemeModel');
 const Semester = require('../models/semModel');
 const Batch = require('../models/batchModel');
+const College = require('../models/collegeModel');
 
 
 
@@ -10,7 +11,7 @@ const Batch = require('../models/batchModel');
 
 // get the student complete data as it is in db
 
-const student = async (req, res) => {
+const student = async (req, res, next) => {
     try {
 
         const studentData = req.student;
@@ -22,6 +23,7 @@ const student = async (req, res) => {
             );
 
     } catch (error) {
+        next(error);
         res.status(400).send({ message: `error from the user route ${error}` })
     }
 };
@@ -30,7 +32,7 @@ const student = async (req, res) => {
 // *--------------------------------
 // * Function to get all students
 // *--------------------------------
-const getAllStudents = async (req, res) => {
+const getAllStudents = async (req, res, next) => {
     try {
         // Retrieve all students from the database
         const students = await Student.find()
@@ -38,9 +40,11 @@ const getAllStudents = async (req, res) => {
             .populate('scheme')
             .populate('semester')
             .populate('batch')
+            .populate('college')
             .exec();
         res.status(200).json(students);
     } catch (error) {
+        next(error);
         res.status(500).json({ message: 'Internal server error.' });
     }
 };
@@ -57,7 +61,7 @@ const getAllStudents = async (req, res) => {
 const register = async (req, res, next) => {
     try {
         // Extract departmentId, semesterId, and batchId from request body
-        const { name, dob, gender, usn, password, email, contact, department, semester, batch, scheme } = req.body;
+        const { name, dob, gender, usn, password, email, contact, department, semester, batch, scheme, college, isApproved } = req.body;
         // Get the current date and time
         const currentDate = new Date();
 
@@ -72,10 +76,12 @@ const register = async (req, res, next) => {
 
         const checkScheme = await Scheme.findOne({ scheme: scheme });
 
+        const checkCollege = await College.findOne({ clgCode: college });
+
 
         // Check if any of the referenced documents are not found
-        if (!department || !semester || !scheme) {
-            return res.status(400).json({ message: "Department, Semester, or Scheme not found" });
+        if (!checkDepartment || !checkSemester || !checkBatch || !checkScheme || !checkCollege) {
+            return res.status(400).json({ message: "Department, Semester, Batch, Scheme, or College not found" });
         }
 
 
@@ -98,23 +104,35 @@ const register = async (req, res, next) => {
             usn,
             email,
             contact,
+            isApproved,
             regesteredAt: currentDate,
             department: checkDepartment._id,
             semester: checkSemester._id,
             batch: checkBatch._id,
             scheme: checkScheme._id,
+            college: checkCollege._id
         });
 
 
-        // Save the new customer object to the database
-        const savedStudent = await Student.create(newStudent);
+
         // Save the student document to the database
+        const savedStudent = await Student.create(newStudent);
+
+        // Add basic student info to the college's students array
+        checkCollege.students.push({
+            studentId: savedStudent._id,
+            name: savedStudent.name,
+            usn: savedStudent.usn
+        });
+
+        // Save the updated college document
+        await checkCollege.save();
 
         res.status(201).json({ message: "Registration Successfull" });
     } catch (error) {
+        next(error);
         // console.error(error);
         // res.status(500).send('Internal Server Error');
-        next(error);
     }
 };
 
@@ -125,7 +143,7 @@ const register = async (req, res, next) => {
 // *--------------------------
 
 // Function to handle user login
-const studentLogin = async (req, res) => {
+const studentLogin = async (req, res, next) => {
     try {
         const { usn, password } = req.body;
         const student = await Student.findOne({ usn });
@@ -151,6 +169,7 @@ const studentLogin = async (req, res) => {
         // const token = jwt.sign({ userId: user.c_id }, process.env.JWT_SECRET);
         // res.status(200).json({ token });
     } catch (error) {
+        next(error);
         res.status(500).json({ message: 'Internal server error.' });
     }
 };
