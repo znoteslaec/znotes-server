@@ -10,7 +10,10 @@ const deptController = require('../controllers/deptController');
 const dssController = require('../controllers/dssController');
 const sectionController = require('../controllers/subjectPageControllers/sectionController');
 const pdfController =require('../controllers/subjectPageControllers/pdfController');
+<<<<<<< HEAD
 const refController = require('../controllers/subjectPageControllers/refController');
+=======
+>>>>>>> 9c0bba2a79e0e956aa27140439afbc8af19368b8
 const upload = require("../utils/multerMiddleware");
 const studentSchema = require('../validators/authValidator');
 const validate = require('../middlewares/validateMiddleware');
@@ -102,6 +105,7 @@ router.delete('/deletePdfFromSection', pdfController.deletePdfFromSection);
 
 
 
+<<<<<<< HEAD
 
 // *--------------------------
 // * References Related Routes
@@ -115,6 +119,8 @@ router.delete('/deleteReference/:subCode/:refId', refController.deleteReference)
 
 
 
+=======
+>>>>>>> 9c0bba2a79e0e956aa27140439afbc8af19368b8
 router.route("/").get(notesController.home);
 
 // route for creating

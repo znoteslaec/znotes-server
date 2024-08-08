@@ -24,6 +24,7 @@ yarn-debug.log*
 yarn-error.log*
 
 
+<<<<<<< HEAD
 
 # added by me 
 tonal-studio-427308-h5-6219fc52727f.json
@@ -31,3 +32,6 @@ tonal-studio-427308-h5-6219fc52727f.json
 .git
 client_directory_structure.txt
 server_directory_structure.txt
+=======
+tonal-studio-427308-h5-6219fc52727f.json
+>>>>>>> 9c0bba2a79e0e956aa27140439afbc8af19368b8

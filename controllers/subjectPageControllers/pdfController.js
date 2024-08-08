@@ -11,7 +11,11 @@ const addPdfToSection = async (req, res, next) => {
     try {
         const currentDate = new Date();
         const formattedDate = `${currentDate.getDate().toString().padStart(2, '0')}${(currentDate.getMonth() + 1).toString().padStart(2, '0')}${currentDate.getFullYear().toString().slice(-2)}`;
+<<<<<<< HEAD
         const uniqueFilename = `Znotes.in-${deptId}${schemeId}${semNum}-${formattedDate}-${pdfFile.originalname}`;
+=======
+        const uniqueFilename = `znotes-${deptId}${schemeId}${semNum}-${formattedDate}-${pdfFile.originalname}`;
+>>>>>>> 9c0bba2a79e0e956aa27140439afbc8af19368b8
 
 
 
