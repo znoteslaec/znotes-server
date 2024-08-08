@@ -1,6 +1,7 @@
 const Department = require('../models/deptModel');
 const Scheme = require('../models/schemeModel');
 const Batch = require('../models/batchModel');
+const College = require('../models/collegeModel');
 
 // *--------------------------------
 // * Logic for adding New Department
@@ -53,11 +54,11 @@ const addDept = async (req, res) => {
 const addSem = async (req, res) => {
     try {
         // Extract departmentId, semesterId, and batchId from request body
-        const { batch } = req.body;
+        const { clgName } = req.body;
 
 
         // Check if customer with the same usn already exists
-        const schemeExist = await Scheme.findOne({ batch });
+        const schemeExist = await Scheme.findOne({ clgName });
 
         if (schemeExist) {
             return res.status(400).json({ message: "Ye scheme already hai !" });
@@ -66,14 +67,14 @@ const addSem = async (req, res) => {
 
 
         // Create a new student document
-        const newScheme = new Batch({
-            batch
+        const newScheme = new College({
+            clgName
 
         });
 
 
         // Save the new customer object to the database
-        const savedSem = await Batch.create(newScheme);
+        const savedSem = await College.create(newScheme);
         // Save the student document to the database
 
         res.status(201).send('Semester Added successfully');

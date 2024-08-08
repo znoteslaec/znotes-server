@@ -47,9 +47,12 @@ const studentSchema = z.object({
 
     scheme: z
         .string({ required_error: "Scheme is required" }),
-        
+
     batch: z
         .string({ required_error: "Batch is required" }),
+        
+    college: z
+        .string({ required_error: "College is required" }),
 
 });
 

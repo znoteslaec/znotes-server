@@ -28,6 +28,7 @@ const authMiddleware = async (req, res, next) => {
         .populate('department')
         .populate('scheme')
         .populate('batch')
+        .populate('college')
         .select({
             password:0,
         });
@@ -45,7 +46,7 @@ const authMiddleware = async (req, res, next) => {
 
         next();
     } catch (error) {
-        console.error("Error in authMiddleware:", error);
+        // console.error("Error in authMiddleware:", error);
         return res
             .status(401)
             .json({ message: "Unauthorized. Invalid Token." });

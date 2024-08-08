@@ -10,6 +10,7 @@ const deptController = require('../controllers/deptController');
 const dssController = require('../controllers/dssController');
 const sectionController = require('../controllers/subjectPageControllers/sectionController');
 const pdfController =require('../controllers/subjectPageControllers/pdfController');
+const refController = require('../controllers/subjectPageControllers/refController');
 const upload = require("../utils/multerMiddleware");
 const studentSchema = require('../validators/authValidator');
 const validate = require('../middlewares/validateMiddleware');
@@ -86,6 +87,9 @@ router.delete('/deleteSection/:subCode/:sectionIndex', sectionController.deleteS
 router.route("/addPdfToSection/:sectionId/addPdf").post(upload.single("pdfFile"),pdfController.addPdfToSection);
 //router.post('/:sectionId/addPdf', sectionController.addPdfToSection)
 
+
+// router.get('/pdf/:filename', pdfController.getPdfsOfSection);
+
 // Route to delete a PDF from a section
 router.delete('/deletePdfFromSection', pdfController.deletePdfFromSection);
 
@@ -94,6 +98,19 @@ router.delete('/deletePdfFromSection', pdfController.deletePdfFromSection);
 //router.get('/pdfs/:subCode/sections/:sectionId', pdfController.getPdfsOfSection);
 
 
+
+
+
+
+
+// *--------------------------
+// * References Related Routes
+// *--------------------------
+// Fetch subject details including references
+
+router.post('/addReference/:subCode', refController.addReference);
+router.put('/updateReference/:subCode/:refId', refController.updateReference);
+router.delete('/deleteReference/:subCode/:refId', refController.deleteReference);
 
 
 
@@ -117,7 +134,7 @@ router.route("/addSem").post(otherController.addSem);
 router.route("/department").get(deptController.department);
 
 // get
-router.route("/dss").get(dssController.dss);
+router.route("/cdss").get(dssController.dss);
 
 
 module.exports = router;

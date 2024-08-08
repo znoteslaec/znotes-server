@@ -1,10 +1,9 @@
 const Section = require('../../models/sectionModel');
 const Subject = require('../../models/subjectModel');
-const path = require('path');
-const fs = require('fs');
+const bucket = require('../../utils/gcsConfig'); 
 
 // Controller function to add a section to a subject
-const addSectionsToSubject = async (req, res) => {
+const addSectionsToSubject = async (req, res, next) => {
     const { subCode, sectionName, sectionDesc, addedBy, addedByName } = req.body;
 
     try {
@@ -40,13 +39,14 @@ const addSectionsToSubject = async (req, res) => {
 
         res.status(201).json({ message: 'Section added successfully', section: newSection });
     } catch (error) {
+        next(error);
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };
 
 // Controller function to get sections of a subject
-const getSubjectSections = async (req, res) => {
+const getSubjectSections = async (req, res, next) => {
     const subCode = req.params.subCode;
 
     try {
@@ -58,13 +58,14 @@ const getSubjectSections = async (req, res) => {
 
         res.status(200).json({ sections: subject.sections });
     } catch (error) {
+        next(error);
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };
 
 // Controller function to update a section within a subject
-const updateSectionInSubject = async (req, res) => {
+const updateSectionInSubject = async (req, res, next) => {
     const { subCode, sectionId } = req.params;
     const { sectionName, sectionDesc } = req.body;
 
@@ -103,6 +104,7 @@ const updateSectionInSubject = async (req, res) => {
         await subject.save();
         res.status(200).json({ message: 'Section updated successfully', section: sectionModel });
     } catch (error) {
+        next(error);
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
     }
@@ -111,7 +113,7 @@ const updateSectionInSubject = async (req, res) => {
 
 
 
-const deleteSectionFromSubject = async (req, res) => {
+const deleteSectionFromSubject = async (req, res, next) => {
     const { subCode, sectionIndex } = req.params;
 
     try {
@@ -134,15 +136,11 @@ const deleteSectionFromSubject = async (req, res) => {
         const removedSection = subject.sections.splice(sectionIndex, 1)[0];
         // console.log('Removed Section:', removedSection);
 
-        // Delete associated PDFs
-        // Check if the removed section has PDFs
-        if (!removedSection.pdfs || !Array.isArray(removedSection.pdfs)) {
-            console.log('No PDFs found for the removed section');
-        } else {
-            // Delete associated PDFs
+        // Delete associated PDFs from GCS
+        if (removedSection.pdfs && Array.isArray(removedSection.pdfs)) {
             for (const pdf of removedSection.pdfs) {
-                const filePath = path.join(__dirname, '..', '..', 'uploads', pdf.pdfFile);
-                fs.unlinkSync(filePath);
+                const blob = bucket.file(pdf.pdfFile);
+                await blob.delete();
             }
         }
 
@@ -154,6 +152,7 @@ const deleteSectionFromSubject = async (req, res) => {
 
         res.status(200).json({ message: 'Section deleted successfully' });
     } catch (error) {
+        next(error);
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
     }

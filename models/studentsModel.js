@@ -31,6 +31,8 @@ const studentSchema = new mongoose.Schema({
   semester: { type: mongoose.Schema.Types.ObjectId, ref: 'Semester' },
   scheme: { type: mongoose.Schema.Types.ObjectId, ref: 'Scheme' },
   batch: { type: mongoose.Schema.Types.ObjectId, ref: 'Batch' },
+  college: { type: mongoose.Schema.Types.ObjectId, ref: 'College'},
+
   email: {
     type: String,
     required: true,
@@ -39,6 +41,12 @@ const studentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+
+  isApproved:{
+    type: Boolean,
+    default:false
+  },
+
   registeredAt: { type: Date, default: Date.now }
 });
 
@@ -58,7 +66,7 @@ studentSchema.methods.generateToken = async function () {
       },
       process.env.JWT_SECRET_KEY,
       {
-        expiresIn: "3d"
+        expiresIn: "7d"
       }
 
     );

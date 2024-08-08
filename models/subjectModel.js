@@ -1,6 +1,28 @@
 
 const mongoose = require('mongoose');
 
+const ReferenceSchema = new mongoose.Schema({
+    refTitle: {
+        type: String,
+        required: true
+    },
+    refLink: {
+        type: String,
+        required: true
+    },
+    addedAt: {
+        type: Date,
+        default: Date.now
+    },
+    addedBy: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Student' 
+    },
+    addedByName:{
+        type: String
+    },
+});
+
 
 const SubjectSchema = new mongoose.Schema({
     subCode: {
@@ -14,32 +36,34 @@ const SubjectSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    department: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Department' 
+    department: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Department'
     },
-    semester: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Semester' 
+    semester: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Semester'
     },
-    scheme: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Scheme' 
+    scheme: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Scheme'
     },
 
-    addedBy: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Student' 
+    addedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Student'
     },
-    addedByName:{
+    addedByName: {
         type: String
     },
 
-    addedAt: { 
-        type: Date, 
-        default: Date.now 
+    addedAt: {
+        type: Date,
+        default: Date.now
     },
-    sections: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Section' }]
+    sections: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Section' }],
+
+    references: [ReferenceSchema]
 });
 
 

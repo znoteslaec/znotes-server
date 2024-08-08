@@ -3,8 +3,7 @@ const Department = require('../models/deptModel');
 const Scheme = require('../models/schemeModel');
 const Semester = require('../models/semModel');
 const Section = require('../models/sectionModel');
-const fs = require('fs');
-const path = require('path');
+const bucket = require('../utils/gcsConfig');
 
 // Controller function to add a new subject
 const addSubject = async (req, res, next) => {
@@ -52,9 +51,9 @@ const addSubject = async (req, res, next) => {
 
     res.status(201).json({ message: 'Subject added successfully', subject: newSubject });
   } catch (error) {
+    next(error);
     console.error(error);
     res.status(500).json({ error: 'Server error' });
-    next(error);
   }
 };
 
@@ -79,15 +78,15 @@ const getSub = async (req, res, next) => {
 
     res.status(200).json({ subjects });
   } catch (error) {
+    next(error);
     console.error(error);
     res.status(500).json({ error: 'Server error' });
-    next(error);
   }
 };
 
 
 // Controller function to get subject details by subCode
-const getSubjectDetails = async (req, res) => {
+const getSubjectDetails = async (req, res, error) => {
   const subCode = req.params.subCode;
 
   try {
@@ -106,6 +105,7 @@ const getSubjectDetails = async (req, res) => {
       res.status(404).send('Subject not found');
     }
   } catch (error) {
+    next(error);
     console.error(error);
     res.status(500).json({ error: 'Server error' });
   }
@@ -160,9 +160,9 @@ const editSubject = async (req, res, next) => {
 
     res.status(200).json({ message: 'Subject updated successfully', subject });
   } catch (error) {
+    next(error);
     console.error(error);
     res.status(500).json({ error: 'Server error' });
-    next(error);
   }
 };
 
@@ -180,13 +180,13 @@ const deleteSubject = async (req, res, next) => {
       return res.status(404).json({ message: 'Subject not found' });
     }
 
-    // Delete associated PDFs for each section
-    for (const section of subject.sections) {
-      for (const pdf of section.pdfs) {
-        const filePath = path.join(__dirname,'..', 'uploads', pdf.pdfFile);
-        fs.unlinkSync(filePath);
+      // Delete associated PDFs for each section from GCS
+      for (const section of subject.sections) {
+        for (const pdf of section.pdfs) {
+          const blob = bucket.file(pdf.pdfFile);
+          await blob.delete();
+        }
       }
-    }
 
     // Delete associated sections
     await Section.deleteMany({ _id: { $in: subject.sections } });
@@ -196,9 +196,9 @@ const deleteSubject = async (req, res, next) => {
 
     res.status(200).json({ message: 'Subject and associated sections deleted successfully', deletedSubject });
   } catch (error) {
+    next(error);
     console.error(error);
     res.status(500).json({ error: 'Server error' });
-    next(error);
   }
 };
 
