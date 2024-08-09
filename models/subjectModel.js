@@ -1,7 +1,7 @@
 
 const mongoose = require('mongoose');
 
-<<<<<<< HEAD
+
 const ReferenceSchema = new mongoose.Schema({
     refTitle: {
         type: String,
@@ -24,8 +24,7 @@ const ReferenceSchema = new mongoose.Schema({
     },
 });
 
-=======
->>>>>>> 9c0bba2a79e0e956aa27140439afbc8af19368b8
+
 
 const SubjectSchema = new mongoose.Schema({
     subCode: {
@@ -39,7 +38,7 @@ const SubjectSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-<<<<<<< HEAD
+
     department: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Department'
@@ -68,34 +67,8 @@ const SubjectSchema = new mongoose.Schema({
     sections: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Section' }],
 
     references: [ReferenceSchema]
-=======
-    department: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Department' 
-    },
-    semester: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Semester' 
-    },
-    scheme: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Scheme' 
-    },
 
-    addedBy: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Student' 
-    },
-    addedByName:{
-        type: String
-    },
-
-    addedAt: { 
-        type: Date, 
-        default: Date.now 
-    },
-    sections: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Section' }]
->>>>>>> 9c0bba2a79e0e956aa27140439afbc8af19368b8
+    
 });
 
 
